@@ -46,6 +46,5 @@ stages:
         dockerfile: $(dockerfilePath)
         containerRegistry: $(dockerRegistryServiceConnection)
         arguments: '--build-arg SERVICE_TYPE=celery'
-
         tags: |
           $(tag)
