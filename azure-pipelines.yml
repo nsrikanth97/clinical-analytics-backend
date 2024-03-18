@@ -11,7 +11,8 @@ resources:
 variables:
   # Container registry service connection established during pipeline creation
   dockerRegistryServiceConnection: '3b6111f9-130f-49de-ac51-d274249c573b'
-  imageRepository: 'nsrikanthclinicalanalyticsbackend'
+  imageRepositoryWeb: 'nsrikanthclinicalanalyticsbackend-web'
+  imageRepositoryCelery: 'nsrikanthclinicalanalyticsbackend-celery'
   containerRegistry: 'clinicalanalytics.azurecr.io'
   dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
   tag: '$(Build.BuildId)'
@@ -35,5 +36,16 @@ stages:
         repository: $(imageRepository)
         dockerfile: $(dockerfilePath)
         containerRegistry: $(dockerRegistryServiceConnection)
+        tags: |
+          $(tag)
+    - task: Docker@2
+      displayName: Build and push an image to container registry
+      inputs:
+        command: buildAndPush
+        repository: $(imageRepositoryCelery)
+        dockerfile: $(dockerfilePath)
+        containerRegistry: $(dockerRegistryServiceConnection)
+        arguments: '--build-arg SERVICE_TYPE=celery'
+
         tags: |
           $(tag)
